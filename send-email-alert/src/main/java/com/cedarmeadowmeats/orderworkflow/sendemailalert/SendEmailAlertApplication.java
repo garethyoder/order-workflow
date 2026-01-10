@@ -46,7 +46,7 @@ public class SendEmailAlertApplication {
                 submission.setPhone(nullCheck(r.getDynamodb().getNewImage().get("phone")));
                 submission.setComments(nullCheck(r.getDynamodb().getNewImage().get("comments")));
                 submission.setReferral(nullCheck(r.getDynamodb().getNewImage().get("referral")));
-                submission.setDate(nullCheck(r.getDynamodb().getNewImage().get("date")));
+                submission.setEventDate(nullCheck(r.getDynamodb().getNewImage().get("eventDate")));
                 submission.setVenue(nullCheck(r.getDynamodb().getNewImage().get("venue")));
                 submission.setOrganizationId(
                     nullCheckOrganizationIdEnum(r.getDynamodb().getNewImage().get("organizationId"))

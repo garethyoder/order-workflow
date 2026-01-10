@@ -9,7 +9,7 @@ public class Submission {
     private String phone;
     private String comments;
     private String referral;
-    private String date;
+    private String eventDate;
     private String venue;
     private FormEnum form;
     private OrderFormSelectionEnum orderFormSelectionEnum;
@@ -78,12 +78,12 @@ public class Submission {
         this.referral = referral;
     }
 
-    public String getDate() {
-        return date;
+    public String getEventDate() {
+        return eventDate;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setEventDate(String eventDate) {
+        this.eventDate = eventDate;
     }
 
     public String getVenue() {

@@ -12,6 +12,7 @@ import java.lang.invoke.MethodHandles;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -128,9 +129,9 @@ public class EmailService {
                 .replace("${name}", submission.getName())
                 .replace("${phone}", submission.getPhone())
                 .replace("${email}", submission.getEmail())
-                .replace("${date}", submission.getDate())
+                .replace("${eventDate}", submission.getEventDate())
                 .replace("${venue}", submission.getVenue())
-                .replace("${comments}", submission.getComments());
+                .replace("${comments}", Optional.ofNullable(submission.getComments()).orElse(""));
         } else if (FormEnum.ORDER_FORM.equals(submission.getForm())) {
             body = Files.readString(Path.of(emailTemplateLocationConfig.orderFormAlertEmail()))
                     .replace("${companyName}", OrganizationIdEnum.getCompanyName(submission.getOrganizationId()))
