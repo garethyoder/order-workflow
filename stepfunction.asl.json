@@ -1,5 +1,5 @@
 {
-  "Comment": "A description of my state machine",
+  "Comment": "Post Submit Form Actions Step Function",
   "StartAt": "SendEmailAlert",
   "States": {
     "SendEmailAlert": {
@@ -10,7 +10,7 @@
         "InvocationType": "Event",
         "Payload.$": "$"
       },
-      "ResultPath" : null,
+      "ResultPath": null,
       "Retry": [
         {
           "ErrorEquals": [
@@ -42,7 +42,7 @@
         "InvocationType": "Event",
         "Payload.$": "$"
       },
-      "ResultPath" : null,
+      "ResultPath": null,
       "Retry": [
         {
           "ErrorEquals": [
@@ -64,7 +64,18 @@
           "Next": "SendEmail"
         }
       ],
-      "Next": "CreateCustomerInSquare"
+      "Next": "Choice"
+    },
+    "Choice": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Next": "Success",
+          "Variable": "$[0].dynamodb.NewImage.organizationId.S",
+          "StringEquals": "G_YODER_AUDIO_EXPRESSIONS"
+        }
+      ],
+      "Default": "CreateCustomerInSquare"
     },
     "CreateCustomerInSquare": {
       "Type": "Task",
@@ -74,7 +85,7 @@
         "InvocationType": "Event",
         "Payload.$": "$"
       },
-      "ResultPath" : null,
+      "ResultPath": null,
       "Retry": [
         {
           "ErrorEquals": [
