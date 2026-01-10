@@ -30,8 +30,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.function.context.test.FunctionalSpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
@@ -41,7 +41,7 @@ class CreateCustomerInSquareApplicationEventTests {
     @Autowired
     private CreateCustomerInSquareApplication application;
 
-    @MockBean
+    @MockitoBean
     private SquareClient squareClient;
     @Captor
     private ArgumentCaptor<SearchCustomersRequest> searchCustomersRequestArgumentCaptor;

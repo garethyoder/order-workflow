@@ -10,8 +10,10 @@ public enum FormEnum {
     ORDER_FORM("order-form"),
     @JsonProperty("fundraiser-form")
     FUNDRAISER_FORM("fundraiser-form"),
-    @JsonProperty("vendor-form")
-    VENDOR_FORM("vendor-form");
+    @JsonProperty("wholesale-form")
+    WHOLESALE_FORM("wholesale-form"),
+    @JsonProperty("dj-form")
+    DJ_FORM("dj-form");
 
     private final String value;
 
@@ -30,8 +32,10 @@ public enum FormEnum {
             return "Order Form";
         } else if (formEnum.equals(FUNDRAISER_FORM)) {
             return "Fundraiser Form";
-        } else if (formEnum.equals(VENDOR_FORM)) {
-            return "Vendor Form";
+        } else if (formEnum.equals(WHOLESALE_FORM)) {
+            return "Wholesale Form";
+        } else if (formEnum.equals(DJ_FORM)) {
+            return "DJ Form";
         } else {
             return "Unknown";
         }

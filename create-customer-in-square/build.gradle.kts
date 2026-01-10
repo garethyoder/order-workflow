@@ -1,14 +1,16 @@
 plugins {
     java
-    id("org.springframework.boot") version "3.3.4"
-    id("io.spring.dependency-management") version "1.1.6"
+    id("org.springframework.boot") version "3.5.8"
+    id("io.spring.dependency-management") version "1.1.7"
 }
 
 group = "com.cedarmeadowmeats.order-workflow.create-customer-in-square"
-version = "0.0.1-SNAPSHOT"
+version = "0.0.2"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
 }
 
 repositories {
@@ -16,7 +18,7 @@ repositories {
 }
 
 extra["springCloudVersion"] = "2023.0.3"
-extra["awsSdkBom"] = "2.28.26"
+extra["awsSdkBom"] = "2.31.27"
 extra["awsLambdaJavaCore"] = "1.2.3"
 extra["awsLambdaJavaEvents"] = "3.11.4"
 extra["awsLambdaJavaSerialization"] = "1.1.5"

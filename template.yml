@@ -50,7 +50,7 @@ Resources:
     Properties:
       FunctionName: !Sub 'send-email-alert-${Environment}'
       Handler: org.springframework.cloud.function.adapter.aws.FunctionInvoker::handleRequest
-      Runtime: java21
+      Runtime: java25
       #      SnapStart:
       #        ApplyOn: PublishedVersions
       CodeUri: send-email-alert
@@ -77,7 +77,7 @@ Resources:
     Properties:
       FunctionName: !Sub 'send-email-confirmation-${Environment}'
       Handler: org.springframework.cloud.function.adapter.aws.FunctionInvoker::handleRequest
-      Runtime: java21
+      Runtime: java25
       #      SnapStart:
       #        ApplyOn: PublishedVersions
       CodeUri: send-email-confirmation
@@ -103,7 +103,7 @@ Resources:
     Properties:
       FunctionName: !Sub 'create-customer-in-square-${Environment}'
       Handler: org.springframework.cloud.function.adapter.aws.FunctionInvoker::handleRequest
-      Runtime: java21
+      Runtime: java25
       #      SnapStart:
       #        ApplyOn: PublishedVersions
       CodeUri: create-customer-in-square

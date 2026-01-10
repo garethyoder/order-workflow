@@ -18,8 +18,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.function.context.test.FunctionalSpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import software.amazon.awssdk.services.sesv2.SesV2Client;
 import software.amazon.awssdk.services.sesv2.model.SendEmailRequest;
@@ -32,7 +32,7 @@ public class SendEmailConfirmationApplicationEventTest {
   @Autowired
   private SendEmailConfirmationApplication application;
 
-  @MockBean
+  @MockitoBean
   private SesV2Client sesV2Client;
   @Captor
   private ArgumentCaptor<SendEmailRequest> sendEmailRequestArgumentCaptor;
