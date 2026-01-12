@@ -142,7 +142,7 @@ class SendEmailAlertApplicationEventTest {
 
         // Alert Email Assertions
         MatcherAssert.assertThat(alertEmail.destination().toAddresses(), hasItems("Gareth Yoder <garethyoder@yahoo.com>"));
-        Assertions.assertEquals("Gareth Yoder <garethyoder@yahoo.com>", alertEmail.fromEmailAddress(), "Verify the \"noReply\" from sender email.");
+        Assertions.assertEquals("noReply <noReply@gyoderaudioexpressions.com>", alertEmail.fromEmailAddress(), "Verify the \"noReply\" from sender email.");
         Assertions.assertEquals("client@test.com", alertEmail.replyToAddresses().getFirst(), "Verify the reply to is the client email.");
         Assertions.assertEquals("G Yoder Audio Expressions DJ Form: John Doe", alertEmail.content().simple().subject().data(), "Verify the email subject line.");
         MatcherAssert.assertThat("Alert email must contain client's name.", alertEmail.content().simple().body().toString(), containsString("John Doe"));
@@ -166,7 +166,7 @@ class SendEmailAlertApplicationEventTest {
 
         // Alert Email Assertions
         MatcherAssert.assertThat(alertEmail.destination().toAddresses(), hasItems("Gareth Yoder <garethyoder@yahoo.com>"));
-        Assertions.assertEquals("Gareth Yoder <garethyoder@yahoo.com>", alertEmail.fromEmailAddress(), "Verify the \"noReply\" from sender email.");
+        Assertions.assertEquals("noReply <noReply@gyoderaudioexpressions.com>", alertEmail.fromEmailAddress(), "Verify the \"noReply\" from sender email.");
         Assertions.assertEquals("client@test.com", alertEmail.replyToAddresses().getFirst(), "Verify the reply to is the client email.");
         Assertions.assertEquals("G Yoder Audio Expressions DJ Form: John Doe", alertEmail.content().simple().subject().data(), "Verify the email subject line.");
         MatcherAssert.assertThat("Alert email must contain client's name.", alertEmail.content().simple().body().toString(), containsString("John Doe"));

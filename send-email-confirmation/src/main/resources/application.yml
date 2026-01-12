@@ -11,25 +11,16 @@ send-email-confirmation:
     admin-emails: >
       Gareth Yoder <gyoder@cedarmeadowmeats.com>,
       Joy Yoder <jyoder@cedarmeadowmeats.com>
-    defaultAlertEmail: templates/email/confirmationEmail/defaultAlertEmail.html
-    orderFormAlertEmail: templates/email/confirmationEmail/orderFormAlertEmail.html
     confirmationToClientEmail: templates/email/confirmationEmail/confirmationToClientEmail.html
   dj-email:
-    sender: Gareth Yoder <garethyoder@yahoo.com>
-    no-reply-sender: Gareth Yoder <garethyoder@yahoo.com>
+    sender: noReply <noReply@gyoderaudioexpressions.com>
+    no-reply-sender: noReply <noReply@gyoderaudioexpressions.com>
     admin-emails: Gareth Yoder <garethyoder@yahoo.com>
 ---
 spring:
   config:
     activate:
       on-profile: tc
-send-email-confirmation:
-  email:
-    defaultAlertEmail: src/main/resources/templates/email/confirmationEmail/defaultAlertEmail.html
-    orderFormAlertEmail: src/main/resources/templates/email/confirmationEmail/orderFormAlertEmail.html
-    confirmationToClientEmail: src/main/resources/templates/email/confirmationEmail/confirmationToClientEmail.html
-  dj-email:
-    defaultAlertEmail: src/main/resources/templates/email/alertEmail/djFormAlertEmail.html
 ---
 spring:
   config:
@@ -37,10 +28,3 @@ spring:
       on-profile: local
   main:
     web-application-type: servlet
-send-email-confirmation:
-  email:
-    defaultAlertEmail: src/main/resources/templates/email/confirmationEmail/defaultAlertEmail.html
-    orderFormAlertEmail: src/main/resources/templates/email/confirmationEmail/orderFormAlertEmail.html
-    confirmationToClientEmail: src/main/resources/templates/email/confirmationEmail/confirmationToClientEmail.html
-  dj-email:
-    defaultAlertEmail: src/main/resources/templates/email/alertEmail/djFormAlertEmail.html
