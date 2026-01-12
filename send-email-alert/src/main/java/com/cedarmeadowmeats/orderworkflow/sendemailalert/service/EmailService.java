@@ -8,13 +8,15 @@ import com.cedarmeadowmeats.orderworkflow.sendemailalert.model.FormEnum;
 import com.cedarmeadowmeats.orderworkflow.sendemailalert.model.OrganizationIdEnum;
 import com.cedarmeadowmeats.orderworkflow.sendemailalert.model.Submission;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import software.amazon.awssdk.annotations.NotNull;
@@ -123,16 +125,20 @@ public class EmailService {
 
         String body;
         if (OrganizationIdEnum.G_YODER_AUDIO_EXPRESSIONS.equals(submission.getOrganizationId())) {
-            body = Files.readString(Path.of(djTemplateLocationConfig.defaultAlertEmail()))
+            InputStream is = new ClassPathResource(djTemplateLocationConfig.defaultAlertEmail()).getInputStream();
+            String content = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+            body = content
                 .replace("${companyName}", OrganizationIdEnum.getCompanyName(submission.getOrganizationId()))
                 .replace("${name}", submission.getName())
                 .replace("${phone}", submission.getPhone())
                 .replace("${email}", submission.getEmail())
-                .replace("${date}", submission.getDate())
+                .replace("${eventDate}", submission.getEventDate())
                 .replace("${venue}", submission.getVenue())
-                .replace("${comments}", submission.getComments());
+                .replace("${comments}", Optional.ofNullable(submission.getComments()).orElse(""));
         } else if (FormEnum.ORDER_FORM.equals(submission.getForm())) {
-            body = Files.readString(Path.of(emailTemplateLocationConfig.orderFormAlertEmail()))
+            InputStream is = new ClassPathResource(emailTemplateLocationConfig.orderFormAlertEmail()).getInputStream();
+            String content = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+            body = content
                     .replace("${companyName}", OrganizationIdEnum.getCompanyName(submission.getOrganizationId()))
                     .replace("${name}", submission.getName())
                     .replace("${phone}", submission.getPhone())
@@ -142,7 +148,9 @@ public class EmailService {
                     .replace("${referral}", (StringUtils.hasLength(submission.getReferral()) ? submission.getReferral() : ""))
                     .replace("${referralDisplay}", (StringUtils.hasLength(submission.getReferral()) ? "block" : "none"));
         } else {
-            body = Files.readString(Path.of(emailTemplateLocationConfig.defaultAlertEmail()))
+            InputStream is = new ClassPathResource(emailTemplateLocationConfig.defaultAlertEmail()).getInputStream();
+            String content = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+            body = content
                     .replace("${companyName}", OrganizationIdEnum.getCompanyName(submission.getOrganizationId()))
                     .replace("${name}", submission.getName())
                     .replace("${phone}", submission.getPhone())

@@ -11,8 +11,8 @@ send-email-confirmation:
     admin-emails: >
       Gareth Yoder <gyoder@cedarmeadowmeats.com>,
       Joy Yoder <jyoder@cedarmeadowmeats.com>
-    confirmationToClientEmail: src/main/resources/templates/email/confirmationEmail/confirmationToClientEmail.html
+    confirmationToClientEmail: templates/email/confirmationEmail/confirmationToClientEmail.html
   dj-email:
-    sender: Gareth Yoder <gyoder@gyoderaudioexpressions.com>
+    sender: Gareth Yoder <garethyoder@yahoo.com>
     no-reply-sender: noReply <noReply@gyoderaudioexpressions.com>
     admin-emails: Gareth Yoder <garethyoder@yahoo.com>

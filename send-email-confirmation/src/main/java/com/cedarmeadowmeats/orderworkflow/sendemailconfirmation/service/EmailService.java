@@ -7,14 +7,15 @@ import com.cedarmeadowmeats.orderworkflow.sendemailconfirmation.model.EmailTempl
 import com.cedarmeadowmeats.orderworkflow.sendemailconfirmation.model.OrganizationIdEnum;
 import com.cedarmeadowmeats.orderworkflow.sendemailconfirmation.model.Submission;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.annotations.NotNull;
 import software.amazon.awssdk.services.sesv2.SesV2Client;
@@ -119,7 +120,9 @@ public class EmailService {
     public EmailTemplate getCustomerConfirmationEmailTemplate(@NotNull final Submission submission) throws IOException {
         String subject = "Thank you for contacting " + OrganizationIdEnum.getCompanyName(submission.getOrganizationId());
 
-        String body = Files.readString(Path.of(emailTemplateLocationConfig.confirmationToClientEmail()))
+        InputStream is = new ClassPathResource(emailTemplateLocationConfig.confirmationToClientEmail()).getInputStream();
+        String content = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+        String body = content
             .replace("${companyName}", OrganizationIdEnum.getCompanyName(submission.getOrganizationId()))
             .replace("${name}", submission.getName())
             .replace("${phone}", submission.getPhone())

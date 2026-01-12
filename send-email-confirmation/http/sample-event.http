@@ -1,5 +1,5 @@
 ### Generic Form Submission
-POST http://localhost:8080/sendEmailAlert
+POST http://localhost:8080/sendEmailConfirmation
 Content-Type: application/json
 
 "Test"
@@ -11,7 +11,7 @@ Content-Type: application/json
 
 {
   "name": "Gareth Yoder",
-  "email": "gyoder@cedarmeadowmeats.com",
+  "email": "garethyoder@gmail.com",
   "phone": "717-368-2610",
   "eventDate": "2026-05-15",
   "venue": "My House",
@@ -21,7 +21,7 @@ Content-Type: application/json
 }
 
 ### Generic Form Submission
-POST http://localhost:8080/sendEmailAlert
+POST http://localhost:8080/sendEmailConfirmation
 Content-Type: application/json
 
 [
@@ -89,7 +89,7 @@ Content-Type: application/json
 
 
 ### DJ Form Submission
-POST http://localhost:8080/sendEmailAlert
+POST http://localhost:8080/sendEmailConfirmation
 Content-Type: application/json
 
 [

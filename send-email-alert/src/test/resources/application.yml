@@ -11,11 +11,11 @@ send-email-alert:
     admin-emails: >
       Gareth Yoder <gyoder@cedarmeadowmeats.com>,
       Joy Yoder <jyoder@cedarmeadowmeats.com>
-    defaultAlertEmail: src/main/resources/templates/email/alertEmail/defaultAlertEmail.html
-    orderFormAlertEmail: src/main/resources/templates/email/alertEmail/orderFormAlertEmail.html
-    confirmationToClientEmail: src/main/resources/templates/email/confirmationEmail/confirmationToClientEmail.html
+    defaultAlertEmail: templates/email/alertEmail/defaultAlertEmail.html
+    orderFormAlertEmail: templates/email/alertEmail/orderFormAlertEmail.html
+    confirmationToClientEmail: templates/email/confirmationEmail/confirmationToClientEmail.html
   dj-email:
-    sender: Gareth Yoder <gyoder@gyoderaudioexpressions.com>
+    sender: Gareth Yoder <garethyoder@yahoo.com>
     no-reply-sender: noReply <noReply@gyoderaudioexpressions.com>
     admin-emails: Gareth Yoder <garethyoder@yahoo.com>
-    defaultAlertEmail: src/main/resources/templates/email/alertEmail/djFormAlertEmail.html
+    defaultAlertEmail: templates/email/alertEmail/djFormAlertEmail.html

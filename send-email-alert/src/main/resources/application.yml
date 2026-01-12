@@ -14,7 +14,7 @@ send-email-alert:
     defaultAlertEmail: templates/email/alertEmail/defaultAlertEmail.html
     orderFormAlertEmail: templates/email/alertEmail/orderFormAlertEmail.html
   dj-email:
-    sender: Gareth Yoder <gyoder@gyoderaudioexpressions.com>
+    sender: Gareth Yoder <garethyoder@yahoo.com>
     no-reply-sender: noReply <noReply@gyoderaudioexpressions.com>
     admin-emails: Gareth Yoder <garethyoder@yahoo.com>
     defaultAlertEmail: templates/email/alertEmail/djFormAlertEmail.html
@@ -23,12 +23,6 @@ spring:
   config:
     activate:
       on-profile: tc
-send-email-alert:
-  email:
-    defaultAlertEmail: src/main/resources/templates/email/alertEmail/defaultAlertEmail.html
-    orderFormAlertEmail: src/main/resources/templates/email/alertEmail/orderFormAlertEmail.html
-  dj-email:
-    defaultAlertEmail: src/main/resources/templates/email/alertEmail/djFormAlertEmail.html
 ---
 spring:
   config:
@@ -36,9 +30,3 @@ spring:
       on-profile: local
   main:
     web-application-type: servlet
-send-email-alert:
-  email:
-    defaultAlertEmail: src/main/resources/templates/email/alertEmail/defaultAlertEmail.html
-    orderFormAlertEmail: src/main/resources/templates/email/alertEmail/orderFormAlertEmail.html
-  dj-email:
-    defaultAlertEmail: src/main/resources/templates/email/alertEmail/djFormAlertEmail.html

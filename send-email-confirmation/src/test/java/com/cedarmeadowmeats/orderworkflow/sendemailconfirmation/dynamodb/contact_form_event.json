@@ -1,0 +1,51 @@
+{
+  "eventID": "ec1805c55c0e3954e1512f1e00473b16",
+  "eventName": "INSERT",
+  "eventVersion": "1.1",
+  "eventSource": "aws:dynamodb",
+  "awsRegion": "us-east-1",
+  "dynamodb": {
+    "ApproximateCreationDateTime": 1706496528,
+    "Keys": {
+      "lastUpdatedDate": {
+        "S": "2024-01-29T02:48:48.856083087Z[UTC]"
+      },
+      "email": {
+        "S": "client@test.com"
+      }
+    },
+    "NewImage": {
+      "organizationId": {
+        "S": "CEDAR_MEADOW_NATURALS"
+      },
+      "lastUpdatedDate": {
+        "S": "2024-01-29T02:48:48.856083087Z[UTC]"
+      },
+      "comments": {
+        "S": "This is a test comment"
+      },
+      "createdDate": {
+        "S": "2024-01-29T02:48:48.856062450Z[UTC]"
+      },
+      "form": {
+        "S": "CONTACT_FORM"
+      },
+      "phone": {
+        "S": "123-456-7890"
+      },
+      "name": {
+        "S": "Jane Doe"
+      },
+      "version": {
+        "N": "0"
+      },
+      "email": {
+        "S": "client@test.com"
+      }
+    },
+    "SequenceNumber": "4559300000000035553547443",
+    "SizeBytes": 337,
+    "StreamViewType": "NEW_AND_OLD_IMAGES"
+  },
+  "eventSourceARN": "arn:aws:dynamodb:us-east-1:295995521946:table/OrderTable-test/stream/2024-01-28T01:13:25.433"
+}

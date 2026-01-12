@@ -93,8 +93,8 @@ public class SendEmailConfirmationApplicationEventTest {
 
     // Confirmation Email Assertions
     Assertions.assertEquals("client@test.com", confirmationEmail.destination().toAddresses().getFirst(), "Verify the destination email is the client.");
-    Assertions.assertEquals("Gareth Yoder <gyoder@gyoderaudioexpressions.com>", confirmationEmail.fromEmailAddress(), "Verify the sender email is the admin.");
-    Assertions.assertEquals("Gareth Yoder <gyoder@gyoderaudioexpressions.com>", confirmationEmail.replyToAddresses().getFirst(), "Verify the reply to is the admin.");
+    Assertions.assertEquals("Gareth Yoder <garethyoder@yahoo.com>", confirmationEmail.fromEmailAddress(), "Verify the sender email is the admin.");
+    Assertions.assertEquals("Gareth Yoder <garethyoder@yahoo.com>", confirmationEmail.replyToAddresses().getFirst(), "Verify the reply to is the admin.");
     Assertions.assertEquals("Thank you for contacting G Yoder Audio Expressions", confirmationEmail.content().simple().subject().data(), "Verify the email subject line.");
     MatcherAssert.assertThat("Confirmation email body.", confirmationEmail.content().simple().body().toString(), containsString("Thank you for reaching out to G Yoder Audio Expressions.  We typically respond in 1-2 business days."));
 
