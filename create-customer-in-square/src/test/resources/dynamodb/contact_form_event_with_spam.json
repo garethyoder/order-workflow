@@ -43,7 +43,7 @@
         "S": "client@test.com"
       },
       "isSpam": {
-        "BOOL": false
+        "BOOL": true
       }
     },
     "SequenceNumber": "4559300000000035553547443",

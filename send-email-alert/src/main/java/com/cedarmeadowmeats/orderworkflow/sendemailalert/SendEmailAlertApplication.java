@@ -41,6 +41,8 @@ public class SendEmailAlertApplication {
         return value -> {
             LOGGER.info("Printing Event:\n {}", value);
             value.forEach(r -> {
+
+
                 Submission submission = new Submission();
 
                 submission.setName(nullCheck(r.getDynamodb().getNewImage().get("name")));
@@ -67,6 +69,9 @@ public class SendEmailAlertApplication {
                 );
                 submission.setVersion(
                     Integer.valueOf(r.getDynamodb().getNewImage().get("version").getN())
+                );
+                submission.setSpam(
+                    nullCheckBoolean(r.getDynamodb().getNewImage().get("isSpam"))
                 );
 
                 SendEmailResponse response = emailService.sendSubmissionAlertEmail(submission);
@@ -114,6 +119,10 @@ public class SendEmailAlertApplication {
 
     private ZonedDateTime nullCheckZonedDateTime(AttributeValue attributeValue) {
         return attributeValue == null ? null : ZonedDateTime.parse(attributeValue.getS());
+    }
+
+    private Boolean nullCheckBoolean(AttributeValue attributeValue) {
+      return attributeValue == null ? null : attributeValue.getBOOL();
     }
 
 }

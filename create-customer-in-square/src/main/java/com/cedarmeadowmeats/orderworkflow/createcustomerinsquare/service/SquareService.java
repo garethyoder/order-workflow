@@ -3,10 +3,15 @@ package com.cedarmeadowmeats.orderworkflow.createcustomerinsquare.service;
 import com.cedarmeadowmeats.orderworkflow.createcustomerinsquare.model.Submission;
 import com.squareup.square.SquareClient;
 import com.squareup.square.exceptions.ApiException;
-import com.squareup.square.models.*;
+import com.squareup.square.models.CreateCustomerRequest;
+import com.squareup.square.models.CreateCustomerResponse;
+import com.squareup.square.models.Customer;
+import com.squareup.square.models.CustomerFilter;
+import com.squareup.square.models.CustomerQuery;
+import com.squareup.square.models.CustomerTextFilter;
+import com.squareup.square.models.SearchCustomersRequest;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.util.Arrays;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,15 +31,19 @@ public class SquareService {
 
     public void clientSubmission(final Submission submission) throws IOException, ApiException {
 
-        List<Customer> customers = getCustomersByEmail(submission.getEmail());
+        if (!submission.getSpam()) {
+            List<Customer> customers = getCustomersByEmail(submission.getEmail());
 
-        if (CollectionUtils.isEmpty(customers)) {
-            LOGGER.info("Customer does not exist in Square.  Creating a new customer record.");
-            addNewCustomer(submission);
+            if (CollectionUtils.isEmpty(customers)) {
+                LOGGER.info("Customer does not exist in Square.  Creating a new customer record.");
+                addNewCustomer(submission);
+            } else {
+                customers.forEach(customer -> {
+                    LOGGER.info("customer exists: {}", customer.toString());
+                });
+            }
         } else {
-            customers.forEach(customer -> {
-                LOGGER.info("customer exists: {}", customer.toString());
-            });
+            LOGGER.info("Submission marked as spam.  Not creating customer in Square.");
         }
 
     }

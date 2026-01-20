@@ -58,11 +58,16 @@ public class EmailService {
             throw new RuntimeException(e);
         }
 
+        String subject = template.subject();
+        if (submission.getSpam()) {
+            subject = "[SPAM DETECTED] " + subject;
+        }
+
         SendEmailResponse sendEmailResponse;
         if (OrganizationIdEnum.G_YODER_AUDIO_EXPRESSIONS.equals(submission.getOrganizationId())) {
-            sendEmailResponse = send(sesV2Client, djTemplateLocationConfig.noReplySender(), djTemplateLocationConfig.adminEmails(), submission.getEmail(), template.subject(), template.body());
+            sendEmailResponse = send(sesV2Client, djTemplateLocationConfig.noReplySender(), djTemplateLocationConfig.adminEmails(), submission.getEmail(), subject, template.body());
         } else {
-            sendEmailResponse = send(sesV2Client, emailTemplateLocationConfig.noReplySender(), emailTemplateLocationConfig.adminEmails(), submission.getEmail(), template.subject(), template.body());
+            sendEmailResponse = send(sesV2Client, emailTemplateLocationConfig.noReplySender(), emailTemplateLocationConfig.adminEmails(), submission.getEmail(), subject, template.body());
         }
         LOGGER.info("Email sent successfully");
         return sendEmailResponse;

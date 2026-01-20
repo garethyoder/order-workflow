@@ -63,6 +63,9 @@ public class CreateCustomerInSquareApplication {
                 submission.setVersion(
                     Integer.valueOf(r.getDynamodb().getNewImage().get("version").getN())
                 );
+                submission.setSpam(
+                    nullCheckBoolean(r.getDynamodb().getNewImage().get("isSpam"))
+                );
 
                 submission.setIdempotencyKey(r.getEventID());
 
@@ -95,6 +98,10 @@ public class CreateCustomerInSquareApplication {
 
     private ZonedDateTime nullCheckZonedDateTime(AttributeValue attributeValue) {
         return attributeValue == null ? null : ZonedDateTime.parse(attributeValue.getS());
+    }
+
+    private Boolean nullCheckBoolean(AttributeValue attributeValue) {
+        return attributeValue == null ? null : attributeValue.getBOOL();
     }
 
 }
