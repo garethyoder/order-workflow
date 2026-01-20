@@ -17,6 +17,7 @@ public class Submission {
     private ZonedDateTime createdDate;
     private ZonedDateTime lastUpdatedDate;
     private Integer version;
+    private Boolean isSpam;
 
     public Submission() {
 
@@ -124,5 +125,13 @@ public class Submission {
 
     public void setVersion(Integer version) {
         this.version = version;
+    }
+
+    public Boolean getSpam() {
+        return isSpam;
+    }
+
+    public void setSpam(Boolean spam) {
+        isSpam = spam;
     }
 }

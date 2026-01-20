@@ -131,6 +131,29 @@ class SendEmailAlertApplicationEventTest {
     }
 
     @ParameterizedTest
+    @Event(value = "dynamodb/contact_form_event_with_spam.json", type = DynamodbEvent.DynamodbStreamRecord.class)
+    public void testContactFormEventWithSpam(DynamodbEvent.DynamodbStreamRecord event) {
+        assertThat(event).isNotNull();
+        Assertions.assertEquals("Success", application.sendEmailAlert().apply(List.of(event)));
+
+        verify(sesV2Client, times(1)).sendEmail(any(SendEmailRequest.class));
+
+        SendEmailRequest alertEmail = sendEmailRequestArgumentCaptor.getAllValues().getFirst();
+
+        // Alert Email Assertions
+        MatcherAssert.assertThat(alertEmail.destination().toAddresses(), hasItems("Gareth Yoder <gyoder@cedarmeadowmeats.com>"));
+        MatcherAssert.assertThat(alertEmail.destination().toAddresses(), hasItems("Joy Yoder <jyoder@cedarmeadowmeats.com>"));
+        Assertions.assertEquals("noReply <noReply@cedarmeadowmeats.com>", alertEmail.fromEmailAddress(), "Verify the \"noReply\" from sender email.");
+        Assertions.assertEquals("client@test.com", alertEmail.replyToAddresses().getFirst(), "Verify the reply to is the client email.");
+        Assertions.assertEquals("[SPAM DETECTED] Cedar Meadow Naturals Contact Form: Jane Doe", alertEmail.content().simple().subject().data(), "Verify the email subject line.");
+        MatcherAssert.assertThat("Alert email must contain client's name.", alertEmail.content().simple().body().toString(), containsString("Jane Doe"));
+        MatcherAssert.assertThat("Alert email must contain client's phone.", alertEmail.content().simple().body().toString(), containsString("123-456-7890"));
+        MatcherAssert.assertThat("Alert email must contain client's email.", alertEmail.content().simple().body().toString(), containsString("client@test.com"));
+        MatcherAssert.assertThat("Alert email must not contain selection (another form).", alertEmail.content().simple().body().toString(), not(containsString("selection")));
+        MatcherAssert.assertThat("Alert email must contain comments.", alertEmail.content().simple().body().toString(), containsString("This is a test comment"));
+    }
+
+    @ParameterizedTest
     @Event(value = "dynamodb/dj_form_event.json", type = DynamodbEvent.DynamodbStreamRecord.class)
     public void testDjFormEvent(DynamodbEvent.DynamodbStreamRecord event) {
         assertThat(event).isNotNull();

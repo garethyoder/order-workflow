@@ -68,8 +68,17 @@ public class SendEmailConfirmationApplication {
                     Integer.valueOf(r.getDynamodb().getNewImage().get("version").getN())
                 );
 
-                SendEmailResponse response = emailService.sendEmailConfirmationToClient(submission);
-                LOGGER.info("Email sent successfully: {}", response.toString());
+                submission.setSpam(
+                    nullCheckBoolean(r.getDynamodb().getNewImage().get("isSpam"))
+                );
+
+                if (!submission.getSpam()) {
+                    SendEmailResponse response = emailService.sendEmailConfirmationToClient(submission);
+                    LOGGER.info("Email sent successfully: {}", response.toString());
+                } else {
+                    LOGGER.warn("Spam detected. Email not sent for submission: {}", submission.toString());
+                }
+
             });
 
             return "Success";
@@ -113,6 +122,10 @@ public class SendEmailConfirmationApplication {
 
     private ZonedDateTime nullCheckZonedDateTime(AttributeValue attributeValue) {
         return attributeValue == null ? null : ZonedDateTime.parse(attributeValue.getS());
+    }
+
+    private Boolean nullCheckBoolean(AttributeValue attributeValue) {
+        return attributeValue == null ? null : attributeValue.getBOOL();
     }
 
 }

@@ -45,6 +45,9 @@
         },
         "eventDate": {
           "S": "2026-01-10"
+        },
+        "isSpam": {
+          "BOOL": false
         }
       },
       "SequenceNumber": "3185455900003563691574559672",

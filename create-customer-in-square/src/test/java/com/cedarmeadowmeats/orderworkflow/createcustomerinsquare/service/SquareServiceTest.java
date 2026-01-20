@@ -56,6 +56,7 @@ class SquareServiceTest {
     submission.setEmail("client@test.com");
     submission.setPhone("717-368-2610");
     submission.setIdempotencyKey("unique_key");
+    submission.setSpam(false);
   }
 
   @Test

@@ -99,4 +99,34 @@ class CreateCustomerInSquareApplicationEventTests {
         verify(mockCustomersApi, times(1)).createCustomer(any());
     }
 
+    @ParameterizedTest
+    @Event(value = "dynamodb/contact_form_event_with_spam.json", type = DynamodbEvent.DynamodbStreamRecord.class)
+    public void testContactFormEventWithSpam(DynamodbEvent.DynamodbStreamRecord event)
+        throws IOException, ApiException {
+        assertThat(event).isNotNull();
+        //SearchCustomersResponse customersResponse = mock(SearchCustomersResponse.class);
+
+        CustomersApi mockCustomersApi = mock(DefaultCustomersApi.class);
+
+        // Search Customers Mock
+//        when(customersResponse.getCustomers()).thenReturn(null);
+//        doReturn(customersResponse).when(mockCustomersApi).searchCustomers(searchCustomersRequestArgumentCaptor.capture());
+//
+//        // Create Customer Mock
+//        CreateCustomerResponse createCustomerResponse = mock(CreateCustomerResponse.class);
+//        doReturn(createCustomerResponse).when(mockCustomersApi).createCustomer(createCustomerRequestArgumentCaptor.capture());
+//        when(squareClient.getCustomersApi()).thenReturn(mockCustomersApi);
+
+        application.createCustomerInSquare().apply(List.of(event));
+
+//        Assertions.assertEquals("client@test.com", createCustomerRequestArgumentCaptor.getValue().getEmailAddress());
+//        Assertions.assertEquals("123-456-7890", createCustomerRequestArgumentCaptor.getValue().getPhoneNumber());
+//        Assertions.assertEquals("Jane", createCustomerRequestArgumentCaptor.getValue().getGivenName());
+//        Assertions.assertEquals("Doe", createCustomerRequestArgumentCaptor.getValue().getFamilyName());
+//        Assertions.assertEquals("ec1805c55c0e3954e1512f1e00473b16", createCustomerRequestArgumentCaptor.getValue().getIdempotencyKey());
+
+        verify(mockCustomersApi, times(0)).searchCustomers(any());
+        verify(mockCustomersApi, times(0)).createCustomer(any());
+    }
+
 }
