@@ -1,8 +1,7 @@
 package com.cedarmeadowmeats.orderworkflow.createcustomerinsquare.config;
 
-import com.squareup.square.Environment;
 import com.squareup.square.SquareClient;
-import com.squareup.square.authentication.BearerAuthModel;
+import com.squareup.square.core.Environment;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,9 +27,9 @@ public class SquareConfig {
             squareEnvironment = Environment.SANDBOX;
         }
 
-        return new SquareClient.Builder()
+        return SquareClient.builder()
                 .environment(squareEnvironment)
-                .bearerAuthCredentials((new BearerAuthModel.Builder(squareAccessKey)).build())
+                .token(squareAccessKey)
                 .build();
     }
 }

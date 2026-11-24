@@ -7,8 +7,7 @@ import com.cedarmeadowmeats.orderworkflow.sendemailconfirmation.model.OrderFormS
 import com.cedarmeadowmeats.orderworkflow.sendemailconfirmation.model.OrganizationIdEnum;
 import com.cedarmeadowmeats.orderworkflow.sendemailconfirmation.model.Submission;
 import com.cedarmeadowmeats.orderworkflow.sendemailconfirmation.service.EmailService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import java.lang.invoke.MethodHandles;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -91,11 +90,7 @@ public class SendEmailConfirmationApplication {
             LOGGER.info("Printing Event:\n {}", value);
             ObjectMapper mapper = new ObjectMapper();
             Submission submission = null;
-            try {
-                submission = mapper.readValue(value, Submission.class);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
+            submission = mapper.readValue(value, Submission.class);
             LOGGER.info("Deserialized:\n {}", submission.toString());
             SendEmailResponse response = emailService.sendEmailConfirmationToClient(submission);
             LOGGER.info("Email sent successfully: {}", response.toString());

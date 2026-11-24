@@ -7,7 +7,6 @@ import com.cedarmeadowmeats.orderworkflow.createcustomerinsquare.model.OrderForm
 import com.cedarmeadowmeats.orderworkflow.createcustomerinsquare.model.OrganizationIdEnum;
 import com.cedarmeadowmeats.orderworkflow.createcustomerinsquare.model.Submission;
 import com.cedarmeadowmeats.orderworkflow.createcustomerinsquare.service.SquareService;
-import com.squareup.square.exceptions.ApiException;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.ZonedDateTime;
@@ -69,11 +68,7 @@ public class CreateCustomerInSquareApplication {
 
                 submission.setIdempotencyKey(r.getEventID());
 
-              try {
-                squareService.clientSubmission(submission);
-              } catch (IOException | ApiException e) {
-                throw new RuntimeException(e);
-              }
+              squareService.clientSubmission(submission);
             });
 
             return "Success";
