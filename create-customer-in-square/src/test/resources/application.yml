@@ -1,4 +1,8 @@
 spring:
+  jackson:
+    mapper:
+      # AWS event JSON uses capitalized keys (e.g. NewImage); Jackson 3 does not match them by default
+      accept-case-insensitive-properties: true
   main:
     web-application-type: servlet
   cloud:

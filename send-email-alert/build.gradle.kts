@@ -1,6 +1,6 @@
 plugins {
     java
-    id("org.springframework.boot") version "3.5.8"
+    id("org.springframework.boot") version "4.2.0"
     id("io.spring.dependency-management") version "1.1.7"
 }
 
@@ -17,12 +17,12 @@ repositories {
     mavenCentral()
 }
 
-extra["springCloudVersion"] = "2023.0.3"
-extra["awsSdkBom"] = "2.31.27"
-extra["awsLambdaJavaCore"] = "1.2.3"
-extra["awsLambdaJavaEvents"] = "3.11.4"
-extra["awsLambdaJavaSerialization"] = "1.1.5"
-extra["awsLambdaJavaTests"] = "1.1.1"
+extra["springCloudVersion"] = "2026.0.0"
+extra["awsSdkBom"] = "2.59.8"
+extra["awsLambdaJavaCore"] = "1.4.1"
+extra["awsLambdaJavaEvents"] = "3.16.1"
+extra["awsLambdaJavaSerialization"] = "1.4.1"
+extra["awsLambdaJavaTests"] = "1.1.2"
 
 dependencies {
     implementation(platform("software.amazon.awssdk:bom:${property("awsSdkBom")}"))
@@ -46,4 +46,6 @@ dependencyManagement {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    // HTML reports create long, bracketed file names that break `sam build` temp cleanup on Windows
+    reports.html.required = false
 }

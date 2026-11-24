@@ -16,7 +16,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.function.context.test.FunctionalSpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -34,8 +33,7 @@ public class SendEmailConfirmationApplicationEventTest {
 
   @MockitoBean
   private SesV2Client sesV2Client;
-  @Captor
-  private ArgumentCaptor<SendEmailRequest> sendEmailRequestArgumentCaptor;
+  private final ArgumentCaptor<SendEmailRequest> sendEmailRequestArgumentCaptor = ArgumentCaptor.forClass(SendEmailRequest.class);
 
   @BeforeEach
   void setUp() {

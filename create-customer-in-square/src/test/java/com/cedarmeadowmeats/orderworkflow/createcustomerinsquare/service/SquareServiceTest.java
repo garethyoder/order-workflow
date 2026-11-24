@@ -10,16 +10,14 @@ import static org.mockito.Mockito.when;
 
 import com.cedarmeadowmeats.orderworkflow.createcustomerinsquare.model.Submission;
 import com.squareup.square.SquareClient;
-import com.squareup.square.api.CustomersApi;
-import com.squareup.square.api.DefaultCustomersApi;
-import com.squareup.square.exceptions.ApiException;
-import com.squareup.square.models.CreateCustomerRequest;
-import com.squareup.square.models.CreateCustomerResponse;
-import com.squareup.square.models.Customer;
-import com.squareup.square.models.SearchCustomersRequest;
-import com.squareup.square.models.SearchCustomersResponse;
-import java.io.IOException;
+import com.squareup.square.CustomersClient;
+import com.squareup.square.types.CreateCustomerRequest;
+import com.squareup.square.types.CreateCustomerResponse;
+import com.squareup.square.types.Customer;
+import com.squareup.square.types.SearchCustomersRequest;
+import com.squareup.square.types.SearchCustomersResponse;
 import java.util.List;
+import java.util.Optional;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,49 +58,49 @@ class SquareServiceTest {
   }
 
   @Test
-  void findExistingCustomer() throws IOException, ApiException {
+  void findExistingCustomer()  {
     SearchCustomersResponse customersResponse = mock(SearchCustomersResponse.class);
 
-    CustomersApi mockCustomersApi = mock(DefaultCustomersApi.class);
-    when(customersResponse.getCustomers()).thenReturn(List.of(new Customer.Builder().build()));
-    when(mockCustomersApi.searchCustomers(searchCustomersRequestArgumentCaptor.capture())).thenReturn(customersResponse);
-    when(squareClient.getCustomersApi()).thenReturn(mockCustomersApi);
+    CustomersClient mockCustomersApi = mock(CustomersClient.class);
+    when(customersResponse.getCustomers()).thenReturn(Optional.of(List.of(Customer.builder().build())));
+    when(mockCustomersApi.search(searchCustomersRequestArgumentCaptor.capture())).thenReturn(customersResponse);
+    when(squareClient.customers()).thenReturn(mockCustomersApi);
 
     squareService.clientSubmission(submission);
 
     // assert Square search query contains email
-    MatcherAssert.assertThat("Search query must contain email.", searchCustomersRequestArgumentCaptor.getValue().getQuery().toString(), containsString("client@test.com"));
+    MatcherAssert.assertThat("Search query must contain email.", searchCustomersRequestArgumentCaptor.getValue().getQuery().get().toString(), containsString("client@test.com"));
 
-    verify(mockCustomersApi, times(1)).searchCustomers(any());
-    verify(mockCustomersApi, times(0)).createCustomer(any());
+    verify(mockCustomersApi, times(1)).search(any(SearchCustomersRequest.class));
+    verify(mockCustomersApi, times(0)).create(any(CreateCustomerRequest.class));
   }
 
   @Test
-  void addNewCustomer() throws IOException, ApiException {
+  void addNewCustomer()  {
 
     SearchCustomersResponse customersResponse = mock(SearchCustomersResponse.class);
 
-    CustomersApi mockCustomersApi = mock(DefaultCustomersApi.class);
+    CustomersClient mockCustomersApi = mock(CustomersClient.class);
 
     // Search Customers Mock
-    when(customersResponse.getCustomers()).thenReturn(null);
-    when(mockCustomersApi.searchCustomers(searchCustomersRequestArgumentCaptor.capture())).thenReturn(customersResponse);
+    when(customersResponse.getCustomers()).thenReturn(Optional.empty());
+    when(mockCustomersApi.search(searchCustomersRequestArgumentCaptor.capture())).thenReturn(customersResponse);
 
     // Create Customer Mock
     CreateCustomerResponse createCustomerResponse = mock(CreateCustomerResponse.class);
-    doReturn(createCustomerResponse).when(mockCustomersApi).createCustomer(createCustomerRequestArgumentCaptor.capture());
-    when(squareClient.getCustomersApi()).thenReturn(mockCustomersApi);
+    doReturn(createCustomerResponse).when(mockCustomersApi).create(createCustomerRequestArgumentCaptor.capture());
+    when(squareClient.customers()).thenReturn(mockCustomersApi);
 
     squareService.clientSubmission(submission);
 
-    Assertions.assertEquals(submission.getEmail(), createCustomerRequestArgumentCaptor.getValue().getEmailAddress());
-    Assertions.assertEquals(submission.getPhone(), createCustomerRequestArgumentCaptor.getValue().getPhoneNumber());
-    Assertions.assertEquals("Jane", createCustomerRequestArgumentCaptor.getValue().getGivenName());
-    Assertions.assertEquals("Doe", createCustomerRequestArgumentCaptor.getValue().getFamilyName());
-    Assertions.assertEquals(submission.getIdempotencyKey(), createCustomerRequestArgumentCaptor.getValue().getIdempotencyKey());
+    Assertions.assertEquals(submission.getEmail(), createCustomerRequestArgumentCaptor.getValue().getEmailAddress().orElse(null));
+    Assertions.assertEquals(submission.getPhone(), createCustomerRequestArgumentCaptor.getValue().getPhoneNumber().orElse(null));
+    Assertions.assertEquals("Jane", createCustomerRequestArgumentCaptor.getValue().getGivenName().orElse(null));
+    Assertions.assertEquals("Doe", createCustomerRequestArgumentCaptor.getValue().getFamilyName().orElse(null));
+    Assertions.assertEquals(submission.getIdempotencyKey(), createCustomerRequestArgumentCaptor.getValue().getIdempotencyKey().orElse(null));
 
-    verify(mockCustomersApi, times(1)).searchCustomers(any());
-    verify(mockCustomersApi, times(1)).createCustomer(any());
+    verify(mockCustomersApi, times(1)).search(any(SearchCustomersRequest.class));
+    verify(mockCustomersApi, times(1)).create(any(CreateCustomerRequest.class));
   }
 
 }

@@ -2,15 +2,14 @@ package com.cedarmeadowmeats.orderworkflow.createcustomerinsquare.service;
 
 import com.cedarmeadowmeats.orderworkflow.createcustomerinsquare.model.Submission;
 import com.squareup.square.SquareClient;
-import com.squareup.square.exceptions.ApiException;
-import com.squareup.square.models.CreateCustomerRequest;
-import com.squareup.square.models.CreateCustomerResponse;
-import com.squareup.square.models.Customer;
-import com.squareup.square.models.CustomerFilter;
-import com.squareup.square.models.CustomerQuery;
-import com.squareup.square.models.CustomerTextFilter;
-import com.squareup.square.models.SearchCustomersRequest;
-import java.io.IOException;
+import com.squareup.square.core.SquareApiException;
+import com.squareup.square.types.CreateCustomerRequest;
+import com.squareup.square.types.CreateCustomerResponse;
+import com.squareup.square.types.Customer;
+import com.squareup.square.types.CustomerFilter;
+import com.squareup.square.types.CustomerQuery;
+import com.squareup.square.types.CustomerTextFilter;
+import com.squareup.square.types.SearchCustomersRequest;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 import org.slf4j.Logger;
@@ -29,7 +28,7 @@ public class SquareService {
         this.squareClient = squareClient;
     }
 
-    public void clientSubmission(final Submission submission) throws IOException, ApiException {
+    public void clientSubmission(final Submission submission) {
 
         if (!submission.getSpam()) {
             List<Customer> customers = getCustomersByEmail(submission.getEmail());
@@ -48,36 +47,34 @@ public class SquareService {
 
     }
 
-    public void addNewCustomer(final Submission submission) throws IOException, ApiException {
+    public void addNewCustomer(final Submission submission) {
         String[] names = submission.getName().split(" ");
 
-        CreateCustomerRequest createCustomerRequest = new CreateCustomerRequest.Builder()
+        CreateCustomerRequest createCustomerRequest = CreateCustomerRequest.builder()
             .givenName(names[0])
             .familyName(names[names.length - 1])
             .emailAddress(submission.getEmail())
             .phoneNumber(submission.getPhone())
             .idempotencyKey(submission.getIdempotencyKey())
             .build();
-        CreateCustomerResponse response = squareClient.getCustomersApi().createCustomer(createCustomerRequest);
+        CreateCustomerResponse response = squareClient.customers().create(createCustomerRequest);
         LOGGER.info("Response: {}", response.toString());
     }
 
     public List<Customer> getCustomersByEmail(final String email) {
         List<Customer> customers;
         try {
-            SearchCustomersRequest request = new SearchCustomersRequest.Builder()
-                    .query(new CustomerQuery.Builder()
-                            .filter(new CustomerFilter.Builder()
-                                    .emailAddress(new CustomerTextFilter.Builder()
+            SearchCustomersRequest request = SearchCustomersRequest.builder()
+                    .query(CustomerQuery.builder()
+                            .filter(CustomerFilter.builder()
+                                    .emailAddress(CustomerTextFilter.builder()
                                             .exact(email)
                                             .build())
                                     .build())
                             .build())
                     .build();
-            customers = squareClient.getCustomersApi().searchCustomers(request).getCustomers();
-        } catch (ApiException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+            customers = squareClient.customers().search(request).getCustomers().orElse(List.of());
+        } catch (SquareApiException e) {
             throw new RuntimeException(e);
         }
 

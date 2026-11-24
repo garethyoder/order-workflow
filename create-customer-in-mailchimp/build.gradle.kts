@@ -1,7 +1,7 @@
 plugins {
     java
-    id("org.springframework.boot") version "3.3.2"
-    id("io.spring.dependency-management") version "1.1.6"
+    id("org.springframework.boot") version "4.2.0"
+    id("io.spring.dependency-management") version "1.1.7"
 }
 
 group = "com.cedarmeadowmeats.order-workflow.send-email-confirmation"
@@ -15,7 +15,7 @@ repositories {
     mavenCentral()
 }
 
-extra["springCloudVersion"] = "2023.0.1"
+extra["springCloudVersion"] = "2026.0.0"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
@@ -32,4 +32,6 @@ dependencyManagement {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    // HTML reports create long, bracketed file names that break `sam build` temp cleanup on Windows
+    reports.html.required = false
 }

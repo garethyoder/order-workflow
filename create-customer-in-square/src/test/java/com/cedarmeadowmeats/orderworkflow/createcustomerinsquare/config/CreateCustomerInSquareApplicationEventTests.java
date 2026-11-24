@@ -13,22 +13,19 @@ import com.amazonaws.services.lambda.runtime.events.DynamodbEvent;
 import com.amazonaws.services.lambda.runtime.tests.annotations.Event;
 import com.cedarmeadowmeats.orderworkflow.createcustomerinsquare.CreateCustomerInSquareApplication;
 import com.squareup.square.SquareClient;
-import com.squareup.square.api.CustomersApi;
-import com.squareup.square.api.DefaultCustomersApi;
-import com.squareup.square.exceptions.ApiException;
-import com.squareup.square.models.CreateCustomerRequest;
-import com.squareup.square.models.CreateCustomerResponse;
-import com.squareup.square.models.Customer;
-import com.squareup.square.models.SearchCustomersRequest;
-import com.squareup.square.models.SearchCustomersResponse;
-import java.io.IOException;
+import com.squareup.square.CustomersClient;
+import com.squareup.square.types.CreateCustomerRequest;
+import com.squareup.square.types.CreateCustomerResponse;
+import com.squareup.square.types.Customer;
+import com.squareup.square.types.SearchCustomersRequest;
+import com.squareup.square.types.SearchCustomersResponse;
 import java.util.List;
+import java.util.Optional;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.function.context.test.FunctionalSpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -43,90 +40,88 @@ class CreateCustomerInSquareApplicationEventTests {
 
     @MockitoBean
     private SquareClient squareClient;
-    @Captor
-    private ArgumentCaptor<SearchCustomersRequest> searchCustomersRequestArgumentCaptor;
+    private final ArgumentCaptor<SearchCustomersRequest> searchCustomersRequestArgumentCaptor = ArgumentCaptor.forClass(SearchCustomersRequest.class);
 
-    @Captor
-    private ArgumentCaptor<CreateCustomerRequest> createCustomerRequestArgumentCaptor;
+    private final ArgumentCaptor<CreateCustomerRequest> createCustomerRequestArgumentCaptor = ArgumentCaptor.forClass(CreateCustomerRequest.class);
 
     @ParameterizedTest
     @Event(value = "dynamodb/order_form_event.json", type = DynamodbEvent.DynamodbStreamRecord.class)
     public void testOrderFormEventForExistingCustomer(DynamodbEvent.DynamodbStreamRecord event)
-        throws IOException, ApiException {
+         {
         assertThat(event).isNotNull();
         SearchCustomersResponse customersResponse = mock(SearchCustomersResponse.class);
 
-        CustomersApi mockCustomersApi = mock(DefaultCustomersApi.class);
-        when(customersResponse.getCustomers()).thenReturn(List.of(new Customer.Builder().build()));
-        doReturn(customersResponse).when(mockCustomersApi).searchCustomers(searchCustomersRequestArgumentCaptor.capture());
-        when(squareClient.getCustomersApi()).thenReturn(mockCustomersApi);
+        CustomersClient mockCustomersApi = mock(CustomersClient.class);
+        when(customersResponse.getCustomers()).thenReturn(Optional.of(List.of(Customer.builder().build())));
+        doReturn(customersResponse).when(mockCustomersApi).search(searchCustomersRequestArgumentCaptor.capture());
+        when(squareClient.customers()).thenReturn(mockCustomersApi);
 
         application.createCustomerInSquare().apply(List.of(event));
 
         // assert Square search query contains email
-        MatcherAssert.assertThat("Search query must contain email.", searchCustomersRequestArgumentCaptor.getValue().getQuery().toString(), containsString("client@test.com"));
+        MatcherAssert.assertThat("Search query must contain email.", searchCustomersRequestArgumentCaptor.getValue().getQuery().get().toString(), containsString("client@test.com"));
 
-        verify(mockCustomersApi, times(1)).searchCustomers(any());
+        verify(mockCustomersApi, times(1)).search(any(SearchCustomersRequest.class));
     }
 
     @ParameterizedTest
     @Event(value = "dynamodb/contact_form_event.json", type = DynamodbEvent.DynamodbStreamRecord.class)
     public void testContactFormEventForNewCustomer(DynamodbEvent.DynamodbStreamRecord event)
-        throws IOException, ApiException {
+         {
         assertThat(event).isNotNull();
         SearchCustomersResponse customersResponse = mock(SearchCustomersResponse.class);
 
-        CustomersApi mockCustomersApi = mock(DefaultCustomersApi.class);
+        CustomersClient mockCustomersApi = mock(CustomersClient.class);
 
         // Search Customers Mock
-        when(customersResponse.getCustomers()).thenReturn(null);
-        doReturn(customersResponse).when(mockCustomersApi).searchCustomers(searchCustomersRequestArgumentCaptor.capture());
+        when(customersResponse.getCustomers()).thenReturn(Optional.empty());
+        doReturn(customersResponse).when(mockCustomersApi).search(searchCustomersRequestArgumentCaptor.capture());
 
         // Create Customer Mock
         CreateCustomerResponse createCustomerResponse = mock(CreateCustomerResponse.class);
-        doReturn(createCustomerResponse).when(mockCustomersApi).createCustomer(createCustomerRequestArgumentCaptor.capture());
-        when(squareClient.getCustomersApi()).thenReturn(mockCustomersApi);
+        doReturn(createCustomerResponse).when(mockCustomersApi).create(createCustomerRequestArgumentCaptor.capture());
+        when(squareClient.customers()).thenReturn(mockCustomersApi);
 
         application.createCustomerInSquare().apply(List.of(event));
 
-        Assertions.assertEquals("client@test.com", createCustomerRequestArgumentCaptor.getValue().getEmailAddress());
-        Assertions.assertEquals("123-456-7890", createCustomerRequestArgumentCaptor.getValue().getPhoneNumber());
-        Assertions.assertEquals("Jane", createCustomerRequestArgumentCaptor.getValue().getGivenName());
-        Assertions.assertEquals("Doe", createCustomerRequestArgumentCaptor.getValue().getFamilyName());
-        Assertions.assertEquals("ec1805c55c0e3954e1512f1e00473b16", createCustomerRequestArgumentCaptor.getValue().getIdempotencyKey());
+        Assertions.assertEquals("client@test.com", createCustomerRequestArgumentCaptor.getValue().getEmailAddress().orElse(null));
+        Assertions.assertEquals("123-456-7890", createCustomerRequestArgumentCaptor.getValue().getPhoneNumber().orElse(null));
+        Assertions.assertEquals("Jane", createCustomerRequestArgumentCaptor.getValue().getGivenName().orElse(null));
+        Assertions.assertEquals("Doe", createCustomerRequestArgumentCaptor.getValue().getFamilyName().orElse(null));
+        Assertions.assertEquals("ec1805c55c0e3954e1512f1e00473b16", createCustomerRequestArgumentCaptor.getValue().getIdempotencyKey().orElse(null));
 
-        verify(mockCustomersApi, times(1)).searchCustomers(any());
-        verify(mockCustomersApi, times(1)).createCustomer(any());
+        verify(mockCustomersApi, times(1)).search(any(SearchCustomersRequest.class));
+        verify(mockCustomersApi, times(1)).create(any(CreateCustomerRequest.class));
     }
 
     @ParameterizedTest
     @Event(value = "dynamodb/contact_form_event_with_spam.json", type = DynamodbEvent.DynamodbStreamRecord.class)
     public void testContactFormEventWithSpam(DynamodbEvent.DynamodbStreamRecord event)
-        throws IOException, ApiException {
+         {
         assertThat(event).isNotNull();
         //SearchCustomersResponse customersResponse = mock(SearchCustomersResponse.class);
 
-        CustomersApi mockCustomersApi = mock(DefaultCustomersApi.class);
+        CustomersClient mockCustomersApi = mock(CustomersClient.class);
 
         // Search Customers Mock
-//        when(customersResponse.getCustomers()).thenReturn(null);
-//        doReturn(customersResponse).when(mockCustomersApi).searchCustomers(searchCustomersRequestArgumentCaptor.capture());
+//        when(customersResponse.getCustomers()).thenReturn(Optional.empty());
+//        doReturn(customersResponse).when(mockCustomersApi).search(searchCustomersRequestArgumentCaptor.capture());
 //
 //        // Create Customer Mock
 //        CreateCustomerResponse createCustomerResponse = mock(CreateCustomerResponse.class);
-//        doReturn(createCustomerResponse).when(mockCustomersApi).createCustomer(createCustomerRequestArgumentCaptor.capture());
-//        when(squareClient.getCustomersApi()).thenReturn(mockCustomersApi);
+//        doReturn(createCustomerResponse).when(mockCustomersApi).create(createCustomerRequestArgumentCaptor.capture());
+//        when(squareClient.customers()).thenReturn(mockCustomersApi);
 
         application.createCustomerInSquare().apply(List.of(event));
 
-//        Assertions.assertEquals("client@test.com", createCustomerRequestArgumentCaptor.getValue().getEmailAddress());
-//        Assertions.assertEquals("123-456-7890", createCustomerRequestArgumentCaptor.getValue().getPhoneNumber());
-//        Assertions.assertEquals("Jane", createCustomerRequestArgumentCaptor.getValue().getGivenName());
-//        Assertions.assertEquals("Doe", createCustomerRequestArgumentCaptor.getValue().getFamilyName());
-//        Assertions.assertEquals("ec1805c55c0e3954e1512f1e00473b16", createCustomerRequestArgumentCaptor.getValue().getIdempotencyKey());
+//        Assertions.assertEquals("client@test.com", createCustomerRequestArgumentCaptor.getValue().getEmailAddress().orElse(null));
+//        Assertions.assertEquals("123-456-7890", createCustomerRequestArgumentCaptor.getValue().getPhoneNumber().orElse(null));
+//        Assertions.assertEquals("Jane", createCustomerRequestArgumentCaptor.getValue().getGivenName().orElse(null));
+//        Assertions.assertEquals("Doe", createCustomerRequestArgumentCaptor.getValue().getFamilyName().orElse(null));
+//        Assertions.assertEquals("ec1805c55c0e3954e1512f1e00473b16", createCustomerRequestArgumentCaptor.getValue().getIdempotencyKey().orElse(null));
 
-        verify(mockCustomersApi, times(0)).searchCustomers(any());
-        verify(mockCustomersApi, times(0)).createCustomer(any());
+        verify(mockCustomersApi, times(0)).search(any(SearchCustomersRequest.class));
+        verify(mockCustomersApi, times(0)).create(any(CreateCustomerRequest.class));
     }
 
 }
